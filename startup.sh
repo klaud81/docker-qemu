@@ -1,9 +1,8 @@
 #!/bin/bash
-
+sleep 2 
 set -e
 
 [ -n "$DEBUG" ] && set -x
-
 # Create the kvm node (required --privileged)
 if [ ! -e /dev/kvm ]; then
    set +e
@@ -11,25 +10,20 @@ if [ ! -e /dev/kvm ]; then
    set -e
 fi
 
-# If we were given arguments, override the default configuration
-if [ $# -gt 0 ]; then
-   exec "$@"
-fi
-
 # mountpoint check
 if [ ! -d /data ]; then
     if [ "${ISO:0:1}" != "/" ] || [ -z "$VM_DISK_IMAGE" ]; then
-        echo "/data not mounted: using -v to mount it"
+        # echo "/data not mounted: using -v to mount it"
         exit 1
     fi
 fi
-
 VM_RAM=${VM_RAM:-2048}
-VM_DISK_IMAGE_SIZE=${VM_IMAGE:-10G}
+VM_DISK_IMAGE_SIZE=${VM_DISK_IMAGE_SIZE:-10G}
 SPICE_PORT=5900
 
+
 if [ -n "$ISO" ]; then
-    echo "[iso]"
+    # echo "[iso]"
     if [ "${ISO:0:1}" != "/" ]; then
         basename=$(basename $ISO)
         if [ ! -f "/data/${basename}" ] || [ "$ISO_FORCE_DOWNLOAD" != "0" ]; then
@@ -39,7 +33,7 @@ if [ -n "$ISO" ]; then
     fi
     FLAGS_ISO="-cdrom $ISO"
     if [ ! -f "$ISO" ]; then
-        echo "ISO fild not found: $ISO"
+        # echo "ISO fild not found: $ISO"
         exit 1
     fi
 fi
@@ -51,7 +45,7 @@ if [ -z "${VM_DISK_IMAGE}" ] || [ "$VM_DISK_IMAGE_CREATE_IF_NOT_EXIST" != "0" ];
         qemu-img create -f qcow2 ${FLAGS_DISK_IMAGE} ${VM_DISK_IMAGE_SIZE}
     fi
 fi
-[ -f "$FLAGS_DISK_IMAGE" ] || { echo "VM_DISK_IMAGE not found: ${FLAGS_DISK_IMAGE}"; exit 1; }
+# [ -f "$FLAGS_DISK_IMAGE" ] || { echo "VM_DISK_IMAGE not found: ${FLAGS_DISK_IMAGE}"; exit 1; }
 echo "parameter: ${FLAGS_DISK_IMAGE}"
 
 echo "[network]"
@@ -98,11 +92,24 @@ fi
 echo "parameter: ${FLAGS_REMOTE_ACCESS}"
 
 
+
 # Execute with default settings
-/noVNC/utils/launch.sh --listen 6080 &
+
 set -x
-exec /usr/bin/kvm ${FLAGS_REMOTE_ACCESS} \
+
+
+/root/noVNC/utils/launch.sh --listen 6080 --web /root/noVNC/build/ &
+
+
+exec /usr/bin/qemu-system-x86_64 ${FLAGS_REMOTE_ACCESS} \
    -k en-us -m ${VM_RAM} -cpu qemu64 \
+   -vga virtio \
+   -enable-kvm \
+   -usbdevice tablet \
    ${FLAGS_NETWORK} \
    ${FLAGS_ISO} \
-   ${FLAGS_DISK_IMAGE}
+   ${FLAGS_DISK_IMAGE} 
+
+
+#    -enable-vnc \
+#    -enable-vnc-png \
