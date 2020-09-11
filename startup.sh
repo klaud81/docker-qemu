@@ -93,7 +93,7 @@ elif [ "$REMOTE_ACCESS" == "vnc" ]; then
 
     if [ ! -z "$PASSWORD" ]; then
 	echo "password: $PASSWORD"    
-        FLAGS_REMOTE_ACCESS="-vnc :0,${PASSWORD}"
+        FLAGS_REMOTE_ACCESS="-vnc :0,${PASSWORD} -monitor stdio "
     fi
 fi
 echo "parameter: ${FLAGS_REMOTE_ACCESS}"
@@ -108,7 +108,7 @@ set -x
 /root/noVNC/utils/launch.sh --listen 6080 --web /root/noVNC/build/ &
 
 
-exec /usr/bin/qemu-system-x86_64 ${FLAGS_REMOTE_ACCESS} \
+exec echo -e "airi1234\n" | /usr/bin/qemu-system-x86_64 ${FLAGS_REMOTE_ACCESS} \
    -k en-us -m ${VM_RAM} -cpu qemu64 \
    -vga virtio \
    -enable-kvm \

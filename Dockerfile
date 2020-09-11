@@ -16,8 +16,11 @@ ENV ISO=http://releases.ubuntu.com/14.04.2/ubuntu-14.04.2-desktop-amd64.iso
 ENV ISO_FORCE_DOWNLOAD=0
 ENV NETWORK=
 ENV REMOTE_ACCESS=vnc
+ENV PASSWORD=
 
 
+RUN echo -e "http://nl.alpinelinux.org/alpine/v3.5/main\nhttp://nl.alpinelinux.org/alpine/v3.5/community" > /etc/apk/repositories
+#RUN apk --update
 
 RUN apk --update --upgrade add \
       nodejs-npm \
