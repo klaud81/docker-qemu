@@ -91,9 +91,9 @@ elif [ "$REMOTE_ACCESS" == "vnc" ]; then
 #-vnc 0.0.0.0:1,password -k en-us
     FLAGS_REMOTE_ACCESS="-vnc :0"
 
-    if [ ! -z "$PASSWORD" ]; then
+    if [ ! -z "${PASSWORD}" ]; then
 	echo "password: $PASSWORD"    
-        FLAGS_REMOTE_ACCESS="-vnc :0,${PASSWORD}"
+        FLAGS_REMOTE_ACCESS="-vnc :0,password -monitor stdio "
     fi
 fi
 echo "parameter: ${FLAGS_REMOTE_ACCESS}"
@@ -107,16 +107,26 @@ set -x
 
 /root/noVNC/utils/launch.sh --listen 6080 --web /root/noVNC/build/ &
 
-
-exec /usr/bin/qemu-system-x86_64 ${FLAGS_REMOTE_ACCESS} \
+if [ -z "${PASSWORD}" ]; then
+    exec /usr/bin/qemu-system-x86_64 ${FLAGS_REMOTE_ACCESS} \
    -k en-us -m ${VM_RAM} -cpu qemu64 \
    -vga virtio \
    -enable-kvm \
    -usbdevice tablet \
    ${FLAGS_NETWORK} \
    ${FLAGS_ISO} \
-   ${FLAGS_DISK_IMAGE} 
-
+   ${FLAGS_DISK_IMAGE}
+else
+	echo "====== password set dPcks1234d ============"
+    exec echo -e "change vnc password\ndPcks1234d\ncont\n" | /usr/bin/qemu-system-x86_64 ${FLAGS_REMOTE_ACCESS} \
+   -k en-us -m ${VM_RAM} -cpu qemu64 \
+   -vga virtio \
+   -enable-kvm \
+   -usbdevice tablet \
+   ${FLAGS_NETWORK} \
+   ${FLAGS_ISO} \
+   ${FLAGS_DISK_IMAGE}
+fi
 
 #    -enable-vnc \
 #    -enable-vnc-png \
