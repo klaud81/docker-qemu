@@ -27,8 +27,8 @@ docker run -d --privileged --cpus=3 \
   -e VM_DISK_IMAGE_SIZE=60G \
   -e VM_RAM=8192 \
   -e ISO=virtio-win-0.1.187.iso \
-  -e PASSWORD=test \
+  -e PASSWORD=${PASSWORD} \
   -p $EXT_PORT_1:$PORT_1 \
   -p $EXT_PORT_2:$PORT_2 \
-  registry-airi.local/airihq/klaud81/qemunovnc
+  registry-airi.local/airihq/klaud81/qemunovnc:1.0.0
 
