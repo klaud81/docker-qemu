@@ -17,7 +17,7 @@ PORT_2=5900
 EXT_PORT_1=$(($PORT_1 + $1))
 EXT_PORT_2=$(($PORT_2 + $1))
 # 3, 4
-CPU=4
+CPU=6
 # 8092, 10240
 MEM=8092
 # password == null is no passwd, 
