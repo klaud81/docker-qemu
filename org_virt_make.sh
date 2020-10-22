@@ -31,6 +31,7 @@ docker run -d --privileged --cpus=$CPU \
   -e VM_DISK_IMAGE=/data/images/win10img-$1 \
   -e VM_DISK_IMAGE_SIZE=60G \
   -e VM_RAM=$MEM \
+  -e VM_CPU=$CPU \
   -e ISO=virtio-win-0.1.187.iso \
   -e PASSWORD=${PASSWORD} \
   -p $EXT_PORT_1:$PORT_1 \

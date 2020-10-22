@@ -18,6 +18,7 @@ if [ ! -d /data ]; then
     fi
 fi
 VM_RAM=${VM_RAM:-2048}
+VM_CPU=${VM_CPU:-1}
 VM_DISK_IMAGE_SIZE=${VM_DISK_IMAGE_SIZE:-10G}
 SPICE_PORT=5900
 
@@ -107,9 +108,9 @@ set -x
 
 /root/noVNC/utils/launch.sh --listen 6080 --web /root/noVNC/build/ &
 
-
+#cpus=]n[,cores=cores VM_CPU -smp cpus=4
 exec echo -e "airi1234\n" | /usr/bin/qemu-system-x86_64 ${FLAGS_REMOTE_ACCESS} \
-   -k en-us -m ${VM_RAM} -cpu qemu64 \
+   -k en-us -m ${VM_RAM} -cpu qemu64 -smp ${VM_CPU} \
    -vga virtio \
    -enable-kvm \
    -usbdevice tablet \
