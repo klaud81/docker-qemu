@@ -16,10 +16,19 @@ ENV ISO=http://releases.ubuntu.com/14.04.2/ubuntu-14.04.2-desktop-amd64.iso
 ENV ISO_FORCE_DOWNLOAD=0
 ENV NETWORK=
 ENV REMOTE_ACCESS=vnc
+ENV PASSWORD=
 
 
+#RUN echo -e "http://nl.alpinelinux.org/alpine/v3.5/main\nhttp://nl.alpinelinux.org/alpine/v3.5/community" > /etc/apk/repositories
+#RUN sed -i 's/dl-cdn/nl/' /etc/apk/repositories
+#RUN apk --update
 
-RUN apk --update --upgrade add \
+#ADD /apk /apk
+#RUN cp apk/.abuild/-58b83ac3.rsa.pub /etc/apk/keys
+#RUN apk --no-cache --update add ./apk/x11vnc-0.9.13-r0.apk
+
+
+RUN apk update && apk add \
       nodejs-npm \
       nodejs \
       bash \
@@ -37,8 +46,12 @@ RUN apk --update --upgrade add \
       bridge-utils \
       dnsmasq \
       nano \ 
-    # Install noVNC
-    && git clone https://github.com/novnc/noVNC.git /root/noVNC \
+--update-cache \
+        --repository https://alpine.global.ssl.fastly.net/alpine/edge/community \
+        --repository https://alpine.global.ssl.fastly.net/alpine/edge/main \
+        --repository https://dl-3.alpinelinux.org/alpine/edge/testing 
+
+RUN git clone https://github.com/novnc/noVNC.git /root/noVNC \
 	&& git clone https://github.com/novnc/websockify /root/noVNC/utils/websockify \
 	&& rm -rf /root/noVNC/.git \
 	&& rm -rf /root/noVNC/utils/websockify/.git \

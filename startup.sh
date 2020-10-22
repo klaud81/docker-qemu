@@ -18,6 +18,7 @@ if [ ! -d /data ]; then
     fi
 fi
 VM_RAM=${VM_RAM:-2048}
+VM_CPU=${VM_CPU:-1}
 VM_DISK_IMAGE_SIZE=${VM_DISK_IMAGE_SIZE:-10G}
 SPICE_PORT=5900
 
@@ -105,11 +106,16 @@ echo "parameter: ${FLAGS_REMOTE_ACCESS}"
 set -x
 
 
+#TYPE=qemu64
+#TYPE="EPYC,+ibpb"
+TYPE="host"
+#{VM_CPU}
+
 /root/noVNC/utils/launch.sh --listen 6080 --web /root/noVNC/build/ &
 
 if [ -z "${PASSWORD}" ]; then
     exec /usr/bin/qemu-system-x86_64 ${FLAGS_REMOTE_ACCESS} \
-   -k en-us -m ${VM_RAM} -cpu qemu64 \
+   -k en-us -m ${VM_RAM} -cpu ${TYPE} -smp sockets=1,cores=${VM_CPU},threads=1 \
    -vga virtio \
    -enable-kvm \
    -usbdevice tablet \
@@ -117,9 +123,9 @@ if [ -z "${PASSWORD}" ]; then
    ${FLAGS_ISO} \
    ${FLAGS_DISK_IMAGE}
 else
-	echo "====== password set dPcks1234d ============"
-    exec echo -e "change vnc password\ndPcks1234d\ncont\n" | /usr/bin/qemu-system-x86_64 ${FLAGS_REMOTE_ACCESS} \
-   -k en-us -m ${VM_RAM} -cpu qemu64 \
+    echo "====== password set ${PASSWORD}dPcks1234d ============"
+    exec echo -e "change vnc password\n${PASSWORD}\ncont\n" | /usr/bin/qemu-system-x86_64 ${FLAGS_REMOTE_ACCESS} \
+   -k en-us -m ${VM_RAM} -cpu ${TYPE} -smp sockets=1,cores=${VM_CPU},threads=1 \
    -vga virtio \
    -enable-kvm \
    -usbdevice tablet \

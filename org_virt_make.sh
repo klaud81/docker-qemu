@@ -17,11 +17,11 @@ PORT_2=5900
 EXT_PORT_1=$(($PORT_1 + $1))
 EXT_PORT_2=$(($PORT_2 + $1))
 # 3, 4
-CPU=3
+CPU=6
 # 8092, 10240
 MEM=8092
 # password == null is no passwd, 
-PASSWORD=airi1234
+PASSWORD=
 
 # NETWORK brige, tap , other
 #  -e NETWORK=tap \
@@ -31,9 +31,10 @@ docker run -d --privileged --cpus=$CPU \
   -e VM_DISK_IMAGE=/data/images/win10img-$1 \
   -e VM_DISK_IMAGE_SIZE=60G \
   -e VM_RAM=$MEM \
+  -e VM_CPU=$CPU \
   -e ISO=virtio-win-0.1.187.iso \
   -e PASSWORD=${PASSWORD} \
   -p $EXT_PORT_1:$PORT_1 \
   -p $EXT_PORT_2:$PORT_2 \
-  registry-airi.local/airihq/klaud81/qemunovnc:1.0.0
+  registry-airi.local/airihq/klaud81/qemunovnc:latest
 
