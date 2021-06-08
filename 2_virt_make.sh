@@ -21,7 +21,8 @@ CPU=3
 # 8092, 10240
 MEM=8092
 # password == null is no passwd, 
-PASSWORD=airi1234
+#PASSWORD=airi1234
+PASSWORD=
 
 # NETWORK brige, tap , other
 #  -e NETWORK=tap \
@@ -35,5 +36,5 @@ docker run -d --privileged --cpus=$CPU \
   -e PASSWORD=${PASSWORD} \
   -p $EXT_PORT_1:$PORT_1 \
   -p $EXT_PORT_2:$PORT_2 \
-  registry-airi.local/airihq/klaud81/qemunovnc:1.0.0
+  registry-airi.local/airihq/klaud81/qemunovnc:latest
 
